@@ -1,38 +1,53 @@
 import { Text } from "pixi.js";
-import { app, player1, player2 } from "./main";
+import { player1, player2 } from "./main";
+import { app } from "./app";
 
-let text1Str = 'Player ' + 1 + "\n" + " Tadpoles" + 8
-let text2Str = 'Player ' + 2 + "\n" + " Tadpoles" + 8
+let text1Str = "Player " + 1 + "\n" + "Tadpoles: " + 8 + "\nFrogs: " + 0;
+let text2Str = "Player " + 2 + "\n" + "Tadpoles: " + 8 + "\nFrogs: " + 0;
 
 const textObj = {
-    fontFamily: 'Comic Sans MS',
-    fontSize: 24,
-    fill: 0xff1010,
-    align: 'center'
-    }
+  fontFamily: "Comic Sans MS",
+  fontSize: 24,
+  fill: 0xfffafa,
+  align: "center",
+};
 
-let player1Text = new Text(text1Str, textObj)
-player1Text.position.x = 10
+let player1Text = new Text(text1Str, textObj);
+player1Text.position.x = 10;
 
-let player2Text = new Text(text2Str, textObj)
-player2Text.position.x = 580
+let player2Text = new Text(text2Str, textObj);
+player2Text.position.x = 645;
 
-app.stage.addChild(player1Text)
-app.stage.addChild(player2Text)
+export function renderPlayerUI() {
+  app.stage.addChild(player1Text);
+  app.stage.addChild(player2Text);
+}
 
 export function updatePlayerUI() {
+  text1Str =
+    "Player " +
+    player1.playerNumber +
+    "\n" +
+    "Tadpoles: " +
+    player1.tadpolesInHand.length +
+    "\nFrogs: " +
+    player1.frogsInHand;
+  text2Str =
+    "Player " +
+    player2.playerNumber +
+    "\n" +
+    "Tadpoles: " +
+    player2.tadpolesInHand.length +
+    "\nFrogs: " +
+    player2.frogsInHand;
 
-    text1Str = 'Player ' + player1.playerNumber + "\n" + " Tadpoles: " + player1.tadpolesInHand
-    text2Str = 'Player ' + player2.playerNumber + "\n" + " Tadpoles: " + player2.tadpolesInHand
-    
-    player1Text.destroy()
-    player1Text = new Text(text1Str, textObj)
-    player1Text.position.x = 10
-    
-    player2Text.destroy()
-    player2Text = new Text(text2Str, textObj)
-    player2Text.position.x = 580
-    
-    app.stage.addChild(player1Text)
-    app.stage.addChild(player2Text)
+  player1Text.destroy();
+  player1Text = new Text(text1Str, textObj);
+  player1Text.position.x = 10;
+
+  player2Text.destroy();
+  player2Text = new Text(text2Str, textObj);
+  player2Text.position.x = 645;
+
+  renderPlayerUI();
 }
