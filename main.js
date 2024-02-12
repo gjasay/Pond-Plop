@@ -9,7 +9,6 @@ import {
 import { Player, animating } from "./player";
 import { renderPlayerUI, updatePlayerUI } from "./ui";
 import { app } from "./app";
-import Check from "./checking";
 import { Tadpole } from "./tadpole";
 
 // Setup game window
@@ -22,7 +21,6 @@ const purple = ["assets/tadpole.png", "assets/purple_frog.png"];
 export const player1 = new Player(orange, 1);
 export const player2 = new Player(purple, 2);
 
-const check = new Check();
 const tadpole = new Tadpole();
 
 let playerTurn = "player1";
@@ -136,6 +134,5 @@ function onPlayerTurn(player, index) {
   if (animating) return;
   tadpole.place(index, player);
   app.stage.addChild(totalTadpoles[totalTadpoles.length - 1].sprite);
-  check.neighbors(player, index);
   updatePlayerUI();
 }
