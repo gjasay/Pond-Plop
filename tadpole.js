@@ -1,7 +1,8 @@
 import { app } from "./app";
 import { lilyPadObjects } from "./lily_pad";
-import { totalTadpoles } from "./main";
-import { isTileOccupied } from "./my_functions";
+import { player1, player2, totalTadpoles } from "./main";
+import { isTileOccupied, renderSprite } from "./my_functions";
+import { updatePlayerUI } from "./ui";
 
 const neighborOffsets = [
   { dx: -36, dy: -36 },
@@ -55,12 +56,6 @@ export class Tadpole {
       // Calculate the new x and y coordinates for the tadpole if it moves to the neighboring tile
       const newX = nx + nx - currentTadpole.x;
       const newY = ny + ny - currentTadpole.y;
-
-      // Check if the new coordinates are within the bounds of the lily pad objects
-      const isInBounds = newX >= lilyPadObjects[0].x &&
-                         newX <= lilyPadObjects[5].x &&
-                         newY >= lilyPadObjects[0].y &&
-                         newY <= lilyPadObjects[35].y;
       
       // If there is a tadpole on the neighboring tile and the new tile is not occupied
     if (neighborIndex !== -1 && !isTileOccupied(newX, newY)) {
@@ -81,8 +76,8 @@ export class Tadpole {
 
       // Process the tadpole queue
       processTadpoleQueue();
-      }
     }
+   }
   }
 }
 
@@ -126,6 +121,40 @@ function processTadpoleQueue() {
       // Stop the animation
       app.ticker.remove(animateTadpole);
       animating = false;
+
+      // Check if the new coordinates are within the bounds of the lily pad gameboard
+      const isInBounds = newX >= lilyPadObjects[0].x &&
+                         newX <= lilyPadObjects[5].x &&
+                         newY >= lilyPadObjects[0].y &&
+                         newY <= lilyPadObjects[35].y;
+
+      // Handle out of bounds state
+      if (!isInBounds) {
+        // Remove the tadpole from the gameboard
+        tadpole.sprite.parent.removeChild(tadpole.sprite);
+        // Remove the tadpole from the totalTadpoles array
+        totalTadpoles.splice(totalTadpoles.indexOf(tadpole), 1);
+        // Add a tadpole back to the player's hand
+        if (tadpole.texture === "assets/tadpole.png") {
+          player2.tadpolesInHand.push(
+            renderSprite({
+              width: 32,
+              height: 32,
+              texture: "assets/tadpole.png",
+            }),
+          );
+        } else if (tadpole.texture === "assets/orange_tadpole.png") {
+          player1.tadpolesInHand.push(
+            renderSprite({
+              width: 32,
+              height: 32,
+              texture: "assets/orange_tadpole.png",
+            }),
+          );
+        }
+        // Update the player UI
+        updatePlayerUI();
+      }
     }
   };
 
