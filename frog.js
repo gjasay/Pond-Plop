@@ -1,7 +1,7 @@
 import { app } from "./app";
 import { lilyPadObjects } from "./lily_pad";
-import { totalFrogs, totalTadpoles } from "./main";
-import { isTileOccupied } from "./my_functions";
+import { player1, player2, totalFrogs, totalTadpoles } from "./main";
+import { isTileOccupied, renderSprite } from "./my_functions";
 import { updatePlayerUI } from "./ui";
 
 const neighborOffsets = [
@@ -158,10 +158,46 @@ function processFrogQueue() {
         updatePlayerUI();
       }
       // Check for three in a row
-      // checkForRowFrogsAndTadpoles();
+      checkFrogRow();
     }
   };
 
   // Start the animation
   app.ticker.add(animateFrog);
+}
+
+function checkFrogRow() {
+  // Iterate over the totalFrogs array
+  for (let i = 0; i < totalFrogs.length; i++) {
+    const currentFrog = totalFrogs[i];
+
+    // Iterate over the neighborOffsets array
+    for (const offset of neighborOffsets) {
+      // Calculate the x and y coordinates of the neighboring tiles
+      const nx1 = currentFrog.sprite.x + offset.dx;
+      const ny1 = currentFrog.sprite.y + offset.dy;
+      const nx2 = nx1 + offset.dx;
+      const ny2 = ny1 + offset.dy;
+
+      // Find the indices of the frogs that are on the neighboring tiles
+      const neighborIndex1 = totalFrogs.findIndex(
+        (frog) => frog.sprite.x === nx1 && frog.sprite.y === ny1,
+      );
+      const neighborIndex2 = totalFrogs.findIndex(
+        (frog) => frog.sprite.x === nx2 && frog.sprite.y === ny2,
+      );
+
+      // If there are three frogs in a row of the same color
+      if (
+        neighborIndex1 !== -1 &&
+        neighborIndex2 !== -1 &&
+        currentFrog.texture === totalFrogs[neighborIndex1].texture &&
+        totalFrogs[neighborIndex1].texture === totalFrogs[neighborIndex2].texture
+      ) {
+        // Three frogs in a row of the same color have been found
+        const player = currentFrog.texture === "assets/purple_frog.png" ? player2 : player1;
+        player.win();
+      }
+    }
+  }
 }

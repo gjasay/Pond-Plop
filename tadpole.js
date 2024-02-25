@@ -156,7 +156,7 @@ function processTadpoleQueue() {
         updatePlayerUI();
       }
       // Check for three in a row
-      checkForRow();
+      checkTadpoleRow();
     }
   };
 
@@ -164,7 +164,7 @@ function processTadpoleQueue() {
   app.ticker.add(animateTadpole);
 }
 
-function checkForRow() {
+function checkTadpoleRow() {
   let toRemove = [];
 
   // Iterate over the totalTadpoles array

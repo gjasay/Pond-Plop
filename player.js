@@ -1,5 +1,5 @@
-import { LilyPad, lilyPadObjects, lilyPadSprites } from "./lily_pad";
-import { totalTadpoles } from "./main";
+import { app } from "./app";
+import { Text } from "pixi.js";
 import { renderSprite } from "./my_functions";
 
 export class Player {
@@ -12,6 +12,17 @@ export class Player {
     this.maxFrogs = 0;
     this.frogsInHand = [];
     this.color = color;
+  }
+  win() {
+    const winText = new Text("Player " + this.playerNumber + " wins!", {
+      fontFamily: "Comic Sans MS",
+      fontSize: 36,
+      fill: 0xfffafa,
+      align: "center",
+    });
+    winText.position.x = 275;
+    winText.position.y = 50;
+    app.stage.addChild(winText);
   }
 
   spawnTadpoles() {
