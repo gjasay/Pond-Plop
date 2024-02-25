@@ -2,8 +2,6 @@ import { LilyPad, lilyPadObjects, lilyPadSprites } from "./lily_pad";
 import { totalTadpoles } from "./main";
 import { renderSprite } from "./my_functions";
 
-export let animating = false;
-
 export class Player {
   constructor(color, num) {
     this.playerNumber = num;
@@ -12,7 +10,7 @@ export class Player {
     this.tadpolesInHand = [];
     this.frogs = [];
     this.maxFrogs = 0;
-    this.frogsInHand = 0;
+    this.frogsInHand = [];
     this.color = color;
   }
 

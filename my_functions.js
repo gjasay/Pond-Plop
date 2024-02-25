@@ -2,7 +2,7 @@
 
 import { AnimatedSprite, Sprite } from "pixi.js";
 import { app } from "./app";
-import { totalTadpoles } from "./main";
+import { totalFrogs, totalTadpoles } from "./main";
 
 export function renderAnimatedSprite(sprite) {
   let newSprite = new AnimatedSprite(sprite.textures);
@@ -26,7 +26,11 @@ export function renderSprite(sprite) {
 }
 
 export function isTileOccupied(x, y) {
-  return totalTadpoles.some(
+  const tadpoles = totalTadpoles.some(
     (tadpole) => tadpole.sprite.x === x && tadpole.sprite.y === y,
   );
+  const frogs = totalFrogs.some(
+    (frog) => frog.sprite.x === x && frog.sprite.y === y,
+  );
+  return frogs || tadpoles;
 }

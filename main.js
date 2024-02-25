@@ -6,10 +6,11 @@ import {
   lilyPadObjects,
   lilyPadSprites,
 } from "./lily_pad";
-import { Player, animating } from "./player";
+import { Player } from "./player";
 import { renderPlayerUI, updatePlayerUI } from "./ui";
 import { app } from "./app";
 import { Tadpole } from "./tadpole";
+import { Frog } from "./frog";
 
 // Setup game window
 
@@ -22,6 +23,7 @@ export const player1 = new Player(orange, 1);
 export const player2 = new Player(purple, 2);
 
 const tadpole = new Tadpole();
+const frog = new Frog();
 
 let playerTurn = "player1";
 
@@ -71,6 +73,7 @@ const backgroundWater = [];
 const backgroundWaterSprites = [];
 
 export const totalTadpoles = [];
+export const totalFrogs = [];
 
 // Render background water
 
@@ -106,33 +109,48 @@ renderPlayerUI();
 player1.spawnTadpoles();
 player2.spawnTadpoles();
 
-// Game loop
-
-let elapsed = 0.0;
-
-app.ticker.add((delta) => {
-  // player1.checkForRow();
-  // player2.checkForRow();
-});
+// Player interaction
 
 for (let i = 0; i < lilyPadSprites.length; i++) {
   lilyPadSprites[i].eventMode = "static";
   lilyPadSprites[i].onclick = () => {
     if (!isTileOccupied(lilyPadObjects[i].x, lilyPadObjects[i].y)) {
-    if (playerTurn == "player1") {
-      onPlayerTurn(player1, i);
-      playerTurn = "player2";
-    } else if (playerTurn == "player2") {
-      onPlayerTurn(player2, i);
-      playerTurn = "player1";
+      if (playerTurn == "player1") {
+        placeTadpole(player1, i);
+        playerTurn = "player2";
+      } else if (playerTurn == "player2") {
+        placeTadpole(player2, i);
+        playerTurn = "player1";
       }
     }
   };
+  lilyPadSprites[i].on('rightclick', (event) => {
+    if (!isTileOccupied (lilyPadObjects[i].x, lilyPadObjects[i].y)) {
+      if (playerTurn == "player1") {
+        placeFrog(player1, i);
+      } else if (playerTurn == "player2") {
+        placeFrog(player2, i);
+      }
+    }
+  });
 }
 
-function onPlayerTurn(player, index) {
-  if (animating) return;
+function placeTadpole(player, index) {
   tadpole.place(index, player);
   app.stage.addChild(totalTadpoles[totalTadpoles.length - 1].sprite);
   updatePlayerUI();
+}
+
+function placeFrog(player, index) {
+  if(player.frogsInHand.length === 0) alert("You have no frogs to place!");
+  else {
+  frog.place(player, index);
+  app.stage.addChild(totalFrogs[totalFrogs.length - 1].sprite);
+  updatePlayerUI();
+  if (player === player1) {
+    playerTurn = "player2";
+  } else if (player === player2) {
+    playerTurn = "player1";
+  }
+}
 }

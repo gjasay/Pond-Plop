@@ -31,7 +31,7 @@ export function updatePlayerUI() {
     "Tadpoles: " +
     player1.tadpolesInHand.length +
     "\nFrogs: " +
-    player1.frogsInHand;
+    player1.frogsInHand.length;
   text2Str =
     "Player " +
     player2.playerNumber +
@@ -39,7 +39,7 @@ export function updatePlayerUI() {
     "Tadpoles: " +
     player2.tadpolesInHand.length +
     "\nFrogs: " +
-    player2.frogsInHand;
+    player2.frogsInHand.length;
 
   player1Text.destroy();
   player1Text = new Text(text1Str, textObj);

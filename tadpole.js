@@ -155,9 +155,78 @@ function processTadpoleQueue() {
         // Update the player UI
         updatePlayerUI();
       }
+      // Check for three in a row
+      checkForRow();
     }
   };
 
   // Start the animation
   app.ticker.add(animateTadpole);
+}
+
+function checkForRow() {
+  let toRemove = [];
+
+  // Iterate over the totalTadpoles array
+  for (let i = 0; i < totalTadpoles.length; i++) {
+    const currentTadpole = totalTadpoles[i];
+
+    // Iterate over the neighborOffsets array
+    for (const offset of neighborOffsets) {
+      // Calculate the x and y coordinates of the neighboring tiles
+      const nx1 = currentTadpole.sprite.x + offset.dx;
+      const ny1 = currentTadpole.sprite.y + offset.dy;
+      const nx2 = nx1 + offset.dx;
+      const ny2 = ny1 + offset.dy;
+
+      // Find the indices of the tadpoles that are on the neighboring tiles
+      const neighborIndex1 = totalTadpoles.findIndex(
+        (tadpole) => tadpole.sprite.x === nx1 && tadpole.sprite.y === ny1,
+      );
+      const neighborIndex2 = totalTadpoles.findIndex(
+        (tadpole) => tadpole.sprite.x === nx2 && tadpole.sprite.y === ny2,
+      );
+
+      // If there are three tadpoles in a row of the same color
+      if (
+        neighborIndex1 !== -1 &&
+        neighborIndex2 !== -1 &&
+        currentTadpole.texture === totalTadpoles[neighborIndex1].texture &&
+        totalTadpoles[neighborIndex1].texture === totalTadpoles[neighborIndex2].texture
+      ) {
+        // Add the indices to the toRemove array
+        toRemove.push(i, neighborIndex1, neighborIndex2);
+      }
+    }
+  }
+
+  // Remove duplicates from the toRemove array
+  toRemove = [...new Set(toRemove)];
+
+  // Sort the toRemove array in descending order
+  toRemove.sort((a, b) => b - a);
+
+  // Remove the tadpoles from the totalTadpoles array
+  for (const index of toRemove) {
+    const tadpole = totalTadpoles[index];
+
+    // Remove the tadpole from the gameboard
+    tadpole.sprite.parent.removeChild(tadpole.sprite);
+
+    // Add three frogs to the player's hand
+    const player = tadpole.texture === "assets/tadpole.png" ? player2 : player1;
+      player.frogsInHand.push(
+        renderSprite({
+          width: 32,
+          height: 32,
+          texture: player.color[1], // frog texture
+        }),
+      );
+
+    // Update the player UI
+    updatePlayerUI();
+
+    // Remove the tadpole from the totalTadpoles array
+    totalTadpoles.splice(index, 1);
+  }
 }
