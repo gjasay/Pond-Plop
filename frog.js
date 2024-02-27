@@ -20,23 +20,28 @@ const frogQueue = [];
 
 let animating = false;
 
+let queueRunning = false;
+
 export class Frog {
-    place(player, lilyIndex) {
-      if (animating) return;
-      const newFrog = player.frogsInHand.pop();
-  
-      newFrog.x = lilyPadObjects[lilyIndex].x;
-      newFrog.y = lilyPadObjects[lilyIndex].y;
-  
-      totalFrogs.push({
-        sprite: newFrog,
-        texture: player.color[1],
-      });
-  
-      this.checkNeighbors();
+  place(player, lilyIndex) {
+    if (animating) return;
+    const newFrog = player.frogsInHand.pop();
+
+    newFrog.x = lilyPadObjects[lilyIndex].x;
+    newFrog.y = lilyPadObjects[lilyIndex].y;
+
+    totalFrogs.push({
+      sprite: newFrog,
+      texture: player.color[1],
+    });
+
+    this.checkNeighbors();
+    if (!queueRunning) {
+      checkFrogRow();
     }
-   // This function checks the neighboring tiles around the current frog
-   checkNeighbors() {
+  }
+  // This function checks the neighboring tiles around the current frog
+  checkNeighbors() {
     // Get the last frog in the totalFrogs array
     const currentFrog = totalFrogs[totalFrogs.length - 1].sprite;
 
@@ -50,7 +55,7 @@ export class Frog {
       const neighborIndex = totalFrogs.findIndex(
         (frog) => frog.sprite.x === nx && frog.sprite.y === ny,
       );
-        // Find the index of the tadpole that is on the neighboring tile
+      // Find the index of the tadpole that is on the neighboring tile
       const tadpoleIndex = totalTadpoles.findIndex(
         (tadpole) => tadpole.sprite.x === nx && tadpole.sprite.y === ny,
       );
@@ -60,22 +65,39 @@ export class Frog {
       const newY = ny + ny - currentFrog.y;
 
       // If there is a frog or a tadpole on the neighboring tile and the new tile is not occupied
-      if ((neighborIndex !== -1 || (tadpoleIndex !== -1 && tadpoleIndex < totalTadpoles.length)) && !isTileOccupied(newX, newY)) {
+      if (
+        (neighborIndex !== -1 ||
+          (tadpoleIndex !== -1 && tadpoleIndex < totalTadpoles.length)) &&
+        !isTileOccupied(newX, newY)
+      ) {
         // Calculate the increments for the x and y coordinates
         const xIncrement =
-          newX > (neighborIndex !== -1 ? totalFrogs[neighborIndex].sprite.x : totalTadpoles[tadpoleIndex].sprite.x) ? 1 : -1;
+          newX >
+          (neighborIndex !== -1
+            ? totalFrogs[neighborIndex].sprite.x
+            : totalTadpoles[tadpoleIndex].sprite.x)
+            ? 1
+            : -1;
         const yIncrement =
-          newY > (neighborIndex !== -1 ? totalFrogs[neighborIndex].sprite.y : totalTadpoles[tadpoleIndex].sprite.y) ? 1 : -1;
-      
+          newY >
+          (neighborIndex !== -1
+            ? totalFrogs[neighborIndex].sprite.y
+            : totalTadpoles[tadpoleIndex].sprite.y)
+            ? 1
+            : -1;
+
         // Add the frog or tadpole to the queue
         frogQueue.push({
-          frog: neighborIndex !== -1 ? totalFrogs[neighborIndex] : totalTadpoles[tadpoleIndex],
+          frog:
+            neighborIndex !== -1
+              ? totalFrogs[neighborIndex]
+              : totalTadpoles[tadpoleIndex],
           newX,
           newY,
           xIncrement,
           yIncrement,
         });
-      
+
         // Process the frog queue
         processFrogQueue();
       }
@@ -87,6 +109,8 @@ export class Frog {
 function processFrogQueue() {
   // If there are no frogs in the queue or a frog is currently animating, return
   if (frogQueue.length === 0 || animating) return;
+
+  queueRunning = true;
 
   // Get the next frog from the queue
   const { frog, newX, newY, xIncrement, yIncrement } = frogQueue.shift();
@@ -125,10 +149,11 @@ function processFrogQueue() {
       animating = false;
 
       // Check if the new coordinates are within the bounds of the lily pad gameboard
-      const isInBounds = newX >= lilyPadObjects[0].x &&
-                         newX <= lilyPadObjects[5].x &&
-                         newY >= lilyPadObjects[0].y &&
-                         newY <= lilyPadObjects[35].y;
+      const isInBounds =
+        newX >= lilyPadObjects[0].x &&
+        newX <= lilyPadObjects[5].x &&
+        newY >= lilyPadObjects[0].y &&
+        newY <= lilyPadObjects[35].y;
 
       // Handle out of bounds state
       if (!isInBounds) {
@@ -159,6 +184,8 @@ function processFrogQueue() {
       }
       // Check for three in a row
       checkFrogRow();
+
+      queueRunning = false;
     }
   };
 
@@ -192,10 +219,12 @@ function checkFrogRow() {
         neighborIndex1 !== -1 &&
         neighborIndex2 !== -1 &&
         currentFrog.texture === totalFrogs[neighborIndex1].texture &&
-        totalFrogs[neighborIndex1].texture === totalFrogs[neighborIndex2].texture
+        totalFrogs[neighborIndex1].texture ===
+          totalFrogs[neighborIndex2].texture
       ) {
         // Three frogs in a row of the same color have been found
-        const player = currentFrog.texture === "assets/purple_frog.png" ? player2 : player1;
+        const player =
+          currentFrog.texture === "assets/purple_frog.png" ? player2 : player1;
         player.win();
       }
     }

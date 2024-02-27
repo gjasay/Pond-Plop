@@ -1,5 +1,9 @@
 import { Texture } from "pixi.js";
-import { isTileOccupied, renderAnimatedSprite, renderSprite } from "./my_functions";
+import {
+  isTileOccupied,
+  renderAnimatedSprite,
+  renderSprite,
+} from "./my_functions";
 import {
   LilyPad,
   createGameboard,
@@ -124,8 +128,8 @@ for (let i = 0; i < lilyPadSprites.length; i++) {
       }
     }
   };
-  lilyPadSprites[i].on('rightclick', (event) => {
-    if (!isTileOccupied (lilyPadObjects[i].x, lilyPadObjects[i].y)) {
+  lilyPadSprites[i].on("rightclick", (event) => {
+    if (!isTileOccupied(lilyPadObjects[i].x, lilyPadObjects[i].y)) {
       if (playerTurn == "player1") {
         placeFrog(player1, i);
       } else if (playerTurn == "player2") {
@@ -142,15 +146,15 @@ function placeTadpole(player, index) {
 }
 
 function placeFrog(player, index) {
-  if(player.frogsInHand.length === 0) alert("You have no frogs to place!");
+  if (player.frogsInHand.length === 0) alert("You have no frogs to place!");
   else {
-  frog.place(player, index);
-  app.stage.addChild(totalFrogs[totalFrogs.length - 1].sprite);
-  updatePlayerUI();
-  if (player === player1) {
-    playerTurn = "player2";
-  } else if (player === player2) {
-    playerTurn = "player1";
+    frog.place(player, index);
+    app.stage.addChild(totalFrogs[totalFrogs.length - 1].sprite);
+    updatePlayerUI();
+    if (player === player1) {
+      playerTurn = "player2";
+    } else if (player === player2) {
+      playerTurn = "player1";
+    }
   }
-}
 }

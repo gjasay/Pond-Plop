@@ -20,8 +20,9 @@ const tadpoleQueue = [];
 
 let animating = false;
 
-export class Tadpole {
+let queueRunning = false;
 
+export class Tadpole {
   place(lilyIndex, player) {
     if (animating) return;
     const newTadpole = player.tadpolesInHand.pop();
@@ -35,6 +36,9 @@ export class Tadpole {
     });
 
     this.checkNeighbors();
+    if (!queueRunning) {
+      checkTadpoleRow();
+    }
   }
 
   // This function checks the neighboring tiles around the current tadpole
@@ -56,28 +60,28 @@ export class Tadpole {
       // Calculate the new x and y coordinates for the tadpole if it moves to the neighboring tile
       const newX = nx + nx - currentTadpole.x;
       const newY = ny + ny - currentTadpole.y;
-      
+
       // If there is a tadpole on the neighboring tile and the new tile is not occupied
-    if (neighborIndex !== -1 && !isTileOccupied(newX, newY)) {
-      // Calculate the increments for the x and y coordinates
-      const xIncrement =
-        newX > totalTadpoles[neighborIndex].sprite.x ? 1 : -1;
-      const yIncrement =
-        newY > totalTadpoles[neighborIndex].sprite.y ? 1 : -1;
+      if (neighborIndex !== -1 && !isTileOccupied(newX, newY)) {
+        // Calculate the increments for the x and y coordinates
+        const xIncrement =
+          newX > totalTadpoles[neighborIndex].sprite.x ? 1 : -1;
+        const yIncrement =
+          newY > totalTadpoles[neighborIndex].sprite.y ? 1 : -1;
 
-      // Add the tadpole to the queue
-      tadpoleQueue.push({
-        tadpole: totalTadpoles[neighborIndex],
-        newX,
-        newY,
-        xIncrement,
-        yIncrement,
-      });
+        // Add the tadpole to the queue
+        tadpoleQueue.push({
+          tadpole: totalTadpoles[neighborIndex],
+          newX,
+          newY,
+          xIncrement,
+          yIncrement,
+        });
 
-      // Process the tadpole queue
-      processTadpoleQueue();
+        // Process the tadpole queue
+        processTadpoleQueue();
+      }
     }
-   }
   }
 }
 
@@ -85,6 +89,8 @@ export class Tadpole {
 function processTadpoleQueue() {
   // If there are no tadpoles in the queue or a tadpole is currently animating, return
   if (tadpoleQueue.length === 0 || animating) return;
+
+  queueRunning = true;
 
   // Get the next tadpole from the queue
   const { tadpole, newX, newY, xIncrement, yIncrement } = tadpoleQueue.shift();
@@ -123,10 +129,11 @@ function processTadpoleQueue() {
       animating = false;
 
       // Check if the new coordinates are within the bounds of the lily pad gameboard
-      const isInBounds = newX >= lilyPadObjects[0].x &&
-                         newX <= lilyPadObjects[5].x &&
-                         newY >= lilyPadObjects[0].y &&
-                         newY <= lilyPadObjects[35].y;
+      const isInBounds =
+        newX >= lilyPadObjects[0].x &&
+        newX <= lilyPadObjects[5].x &&
+        newY >= lilyPadObjects[0].y &&
+        newY <= lilyPadObjects[35].y;
 
       // Handle out of bounds state
       if (!isInBounds) {
@@ -157,6 +164,7 @@ function processTadpoleQueue() {
       }
       // Check for three in a row
       checkTadpoleRow();
+      queueRunning = false;
     }
   };
 
@@ -192,7 +200,8 @@ function checkTadpoleRow() {
         neighborIndex1 !== -1 &&
         neighborIndex2 !== -1 &&
         currentTadpole.texture === totalTadpoles[neighborIndex1].texture &&
-        totalTadpoles[neighborIndex1].texture === totalTadpoles[neighborIndex2].texture
+        totalTadpoles[neighborIndex1].texture ===
+          totalTadpoles[neighborIndex2].texture
       ) {
         // Add the indices to the toRemove array
         toRemove.push(i, neighborIndex1, neighborIndex2);
@@ -211,17 +220,19 @@ function checkTadpoleRow() {
     const tadpole = totalTadpoles[index];
 
     // Remove the tadpole from the gameboard
-    tadpole.sprite.parent.removeChild(tadpole.sprite);
+    if (tadpole.sprite.parent) {
+      tadpole.sprite.parent.removeChild(tadpole.sprite);
+    }
 
     // Add three frogs to the player's hand
     const player = tadpole.texture === "assets/tadpole.png" ? player2 : player1;
-      player.frogsInHand.push(
-        renderSprite({
-          width: 32,
-          height: 32,
-          texture: player.color[1], // frog texture
-        }),
-      );
+    player.frogsInHand.push(
+      renderSprite({
+        width: 32,
+        height: 32,
+        texture: player.color[1], // frog texture
+      }),
+    );
 
     // Update the player UI
     updatePlayerUI();

@@ -5,6 +5,6 @@ export let app = new Application({
   height: 600,
 });
 
-app.view.addEventListener('contextmenu', (event) => {
+app.view.addEventListener("contextmenu", (event) => {
   event.preventDefault();
 });

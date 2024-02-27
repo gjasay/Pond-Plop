@@ -16,12 +16,12 @@ export class Player {
   win() {
     const winText = new Text("Player " + this.playerNumber + " wins!", {
       fontFamily: "Comic Sans MS",
-      fontSize: 36,
-      fill: 0xfffafa,
+      fontSize: 72,
+      fill: 0xffd700,
       align: "center",
     });
-    winText.position.x = 275;
-    winText.position.y = 50;
+    winText.position.x = 180;
+    winText.position.y = 65;
     app.stage.addChild(winText);
   }
 
@@ -36,6 +36,4 @@ export class Player {
       );
     }
   }
-
-
 }
