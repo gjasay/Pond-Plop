@@ -2,6 +2,7 @@ import { app } from "./app";
 import { lilyPadObjects } from "./lily_pad";
 import { player1, player2, totalFrogs, totalTadpoles } from "./main";
 import { isTileOccupied, renderSprite } from "./my_functions";
+import { checkTadpoleRow } from "./tadpole";
 import { updatePlayerUI } from "./ui";
 
 const neighborOffsets = [
@@ -157,35 +158,61 @@ function processFrogQueue() {
 
       // Handle out of bounds state
       if (!isInBounds) {
-        // Remove the frog from the gameboard
-        frog.sprite.parent.removeChild(frog.sprite);
-        // Remove the frog from the totalFrogs array
-        totalFrogs.splice(totalFrogs.indexOf(frog), 1);
-        // Add a frog back to the player's hand
-        if (frog.texture === "assets/frog.png") {
-          player2.frogsInHand.push(
-            renderSprite({
-              width: 32,
-              height: 32,
-              texture: "assets/frog.png",
-            }),
-          );
-        } else if (frog.texture === "assets/orange_frog.png") {
-          player1.frogsInHand.push(
-            renderSprite({
-              width: 32,
-              height: 32,
-              texture: "assets/orange_frog.png",
-            }),
-          );
+        if (frog.texture === "assets/purple_frog.png" || frog.texture === "assets/orange_frog.png") {
+          // Remove the frog from the gameboard
+          frog.sprite.parent.removeChild(frog.sprite);
+          // Remove the frog from the totalFrogs array
+          totalFrogs.splice(totalFrogs.indexOf(frog), 1);
+          // Add a frog back to the player's hand
+          if (frog.texture === "assets/purple_frog.png") {
+            player2.frogsInHand.push(
+              renderSprite({
+                width: 32,
+                height: 32,
+                texture: "assets/purple_frog.png",
+              }),
+            );
+          } else if (frog.texture === "assets/orange_frog.png") {
+            player1.frogsInHand.push(
+              renderSprite({
+                width: 32,
+                height: 32,
+                texture: "assets/orange_frog.png",
+              }),
+            );
+          }
+        } else {
+          // Remove the tadpole from the gameboard
+          frog.sprite.parent.removeChild(frog.sprite);
+          // Remove the tadpole from the totalTadpoles array
+          totalTadpoles.splice(totalTadpoles.indexOf(frog), 1);
+          // Add a tadpole back to the player's hand
+          if (frog.texture === "assets/tadpole.png") {
+            player2.tadpolesInHand.push(
+              renderSprite({
+                width: 32,
+                height: 32,
+                texture: "assets/tadpole.png",
+              }),
+            );
+          } else if (frog.texture === "assets/orange_tadpole.png") {
+            player1.tadpolesInHand.push(
+              renderSprite({
+                width: 32,
+                height: 32,
+                texture: "assets/orange_tadpole.png",
+              }),
+            );
+          }
         }
+      }
+        // Check for three in a row
+        checkFrogRow();
+        checkTadpoleRow();
         // Update the player UI
         updatePlayerUI();
-      }
-      // Check for three in a row
-      checkFrogRow();
 
-      queueRunning = false;
+        queueRunning = false;
     }
   };
 

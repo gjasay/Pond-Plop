@@ -7,8 +7,8 @@ let text2Str = "Player " + 2 + "\n" + "Tadpoles: " + 8 + "\nFrogs: " + 0;
 
 const textObj = {
   fontFamily: "Comic Sans MS",
-  fontSize: 24,
-  fill: 0xfffafa,
+  fontSize: 32,
+  fill: 0xFF7F50,
   align: "center",
 };
 
@@ -16,7 +16,7 @@ let player1Text = new Text(text1Str, textObj);
 player1Text.position.x = 10;
 
 let player2Text = new Text(text2Str, textObj);
-player2Text.position.x = 645;
+player2Text.position.x = 615;
 
 export function renderPlayerUI() {
   app.stage.addChild(player1Text);
@@ -47,7 +47,7 @@ export function updatePlayerUI() {
 
   player2Text.destroy();
   player2Text = new Text(text2Str, textObj);
-  player2Text.position.x = 645;
+  player2Text.position.x = 615;
 
   renderPlayerUI();
 }

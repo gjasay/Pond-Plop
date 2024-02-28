@@ -36,4 +36,16 @@ export class Player {
       );
     }
   }
+  // FOR TESTING PURPOSES
+  spawnFrogs() {
+    while (this.frogsInHand.length < 8) {
+      this.frogsInHand.push(
+        renderSprite({
+          width: 32,
+          height: 32,
+          texture: this.color[1],
+        }),
+      );
+    }
+  }
 }

@@ -112,6 +112,9 @@ for (let i = 0; i < 36; i++) {
 renderPlayerUI();
 player1.spawnTadpoles();
 player2.spawnTadpoles();
+// FOR TESTING PURPOSES
+player1.spawnFrogs();
+player2.spawnFrogs();
 
 // Player interaction
 

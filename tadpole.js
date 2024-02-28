@@ -172,7 +172,7 @@ function processTadpoleQueue() {
   app.ticker.add(animateTadpole);
 }
 
-function checkTadpoleRow() {
+export function checkTadpoleRow() {
   let toRemove = [];
 
   // Iterate over the totalTadpoles array
