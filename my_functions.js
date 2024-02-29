@@ -11,7 +11,6 @@ export function renderAnimatedSprite(sprite) {
   newSprite.width = sprite.width;
   newSprite.height = sprite.height;
   app.stage.addChild(newSprite);
-  newSprite.play();
   return newSprite;
 }
 // Render static sprites

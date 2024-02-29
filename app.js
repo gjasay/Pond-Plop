@@ -8,3 +8,7 @@ export let app = new Application({
 app.view.addEventListener("contextmenu", (event) => {
   event.preventDefault();
 });
+
+// Setup game window
+
+document.body.appendChild(app.view);
