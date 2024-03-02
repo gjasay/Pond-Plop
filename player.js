@@ -1,5 +1,3 @@
-import { app } from "./app";
-import { Text } from "pixi.js";
 import { renderSprite } from "./my_functions";
 
 export class Player {
@@ -12,17 +10,6 @@ export class Player {
     this.maxFrogs = 0;
     this.frogsInHand = [];
     this.color = color;
-  }
-  win() {
-    const winText = new Text("Player " + this.playerNumber + " wins!", {
-      fontFamily: "Comic Sans MS",
-      fontSize: 72,
-      fill: 0xffd700,
-      align: "center",
-    });
-    winText.position.x = 180;
-    winText.position.y = 65;
-    app.stage.addChild(winText);
   }
 
   spawnTadpoles() {

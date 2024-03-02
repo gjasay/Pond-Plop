@@ -67,7 +67,7 @@ export const createBackground = () => {
       // Animate water
       
     backgroundWaterSprites.forEach((i) => {
-        i.animationSpeed = 0.1;
+        i.animationSpeed = 0.50;
         i.play();
     });
 }

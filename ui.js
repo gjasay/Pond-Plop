@@ -1,6 +1,7 @@
 import { Text } from "pixi.js";
 import { player1, player2 } from "./main";
 import { app } from "./app";
+import { gameOver } from "./win";
 
 let text1Str = "Player " + 1 + "\n" + "Tadpoles: " + 8 + "\nFrogs: " + 0;
 let text2Str = "Player " + 2 + "\n" + "Tadpoles: " + 8 + "\nFrogs: " + 0;
@@ -19,8 +20,13 @@ let player2Text = new Text(text2Str, textObj);
 player2Text.position.x = 615;
 
 export function renderPlayerUI() {
-  app.stage.addChild(player1Text);
-  app.stage.addChild(player2Text);
+  if (!gameOver) {
+    app.stage.addChild(player1Text);
+    app.stage.addChild(player2Text);
+  } else {
+    player1Text.destroy();
+    player2Text.destroy();
+  }
 }
 
 export function updatePlayerUI() {

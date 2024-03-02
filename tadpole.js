@@ -1,5 +1,5 @@
 import { app } from "./app";
-import { lilyPadObjects } from "./lily_pad";
+import { lilyPadSprites } from "./lily_pad";
 import { player1, player2, totalTadpoles } from "./main";
 import { isTileOccupied, renderSprite } from "./my_functions";
 import { updatePlayerUI } from "./ui";
@@ -27,8 +27,8 @@ export class Tadpole {
     if (animating) return;
     const newTadpole = player.tadpolesInHand.pop();
 
-    newTadpole.x = lilyPadObjects[lilyIndex].x;
-    newTadpole.y = lilyPadObjects[lilyIndex].y;
+    newTadpole.x = lilyPadSprites[lilyIndex].x;
+    newTadpole.y = lilyPadSprites[lilyIndex].y;
 
     totalTadpoles.push({
       sprite: newTadpole,
@@ -130,10 +130,10 @@ function processTadpoleQueue() {
 
       // Check if the new coordinates are within the bounds of the lily pad gameboard
       const isInBounds =
-        newX >= lilyPadObjects[0].x &&
-        newX <= lilyPadObjects[5].x &&
-        newY >= lilyPadObjects[0].y &&
-        newY <= lilyPadObjects[35].y;
+        newX >= lilyPadSprites[0].x &&
+        newX <= lilyPadSprites[5].x &&
+        newY >= lilyPadSprites[0].y &&
+        newY <= lilyPadSprites[35].y;
 
       // Handle out of bounds state
       if (!isInBounds) {

@@ -4,6 +4,7 @@ import { player1, player2, totalFrogs, totalTadpoles } from "./main";
 import { isTileOccupied, renderSprite } from "./my_functions";
 import { checkTadpoleRow } from "./tadpole";
 import { updatePlayerUI } from "./ui";
+import { win } from "./win";
 
 const neighborOffsets = [
   { dx: -36, dy: -36 },
@@ -252,7 +253,7 @@ function checkFrogRow() {
         // Three frogs in a row of the same color have been found
         const player =
           currentFrog.texture === "assets/purple_frog.png" ? player2 : player1;
-        player.win();
+          win(player);
       }
     }
   }

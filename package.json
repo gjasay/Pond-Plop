@@ -9,11 +9,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "prettier": "^3.2.4",
-    "vite": "^5.0.8"
+    "prettier": "^3.2.5",
+    "vite": "^5.1.4"
   },
   "dependencies": {
-    "@pixi/ui": "^0.10.3",
-    "pixi.js": "^7.3.3"
+    "@pixi/ui": "^0.10.5",
+    "pixi.js": "^7.4.0"
   }
 }

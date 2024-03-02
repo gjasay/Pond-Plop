@@ -16,6 +16,17 @@ import { app } from "./app";
 import { Tadpole } from "./tadpole";
 import { Frog } from "./frog";
 import { createBackground } from "./water";
+import { ws } from "./websocket";
+
+ws.onmessage = message => {
+  const response = JSON.parse(message.data);
+  console.log(response);
+
+  // Update game state based on server response
+  if (response.type === 'updateGameState') {
+    // TODO: Update game state
+  }
+};
 
 export const totalTadpoles = [];
 export const totalFrogs = [];
@@ -48,15 +59,15 @@ renderPlayerUI();
 player1.spawnTadpoles();
 player2.spawnTadpoles();
 // FOR TESTING PURPOSES
-// player1.spawnFrogs();
-// player2.spawnFrogs();
+player1.spawnFrogs();
+player2.spawnFrogs();
 
 // Player interaction
 
 for (let i = 0; i < lilyPadSprites.length; i++) {
   lilyPadSprites[i].eventMode = "static";
   lilyPadSprites[i].onclick = () => {
-    if (!isTileOccupied(lilyPadObjects[i].x, lilyPadObjects[i].y)) {
+    if (!isTileOccupied(lilyPadObjects[i].x, lilyPadSprites[i].y)) {
       if (playerTurn == "player1") {
         placeTadpole(player1, i);
         playerTurn = "player2";
@@ -67,7 +78,7 @@ for (let i = 0; i < lilyPadSprites.length; i++) {
     }
   };
   lilyPadSprites[i].on("rightclick", (event) => {
-    if (!isTileOccupied(lilyPadObjects[i].x, lilyPadObjects[i].y)) {
+    if (!isTileOccupied(lilyPadSprites[i].x, lilyPadSprites[i].y)) {
       if (playerTurn == "player1") {
         placeFrog(player1, i);
       } else if (playerTurn == "player2") {
@@ -81,6 +92,13 @@ function placeTadpole(player, index) {
   tadpole.place(index, player);
   app.stage.addChild(totalTadpoles[totalTadpoles.length - 1].sprite);
   updatePlayerUI();
+
+  // Send game state update to server
+  ws.send(JSON.stringify({
+    type: 'placeTadpole',
+    player: player.playerNumber,
+    index: index,
+  }));
 }
 
 function placeFrog(player, index) {
@@ -94,6 +112,13 @@ function placeFrog(player, index) {
     } else if (player === player2) {
       playerTurn = "player1";
     }
+
+    // Send game state update to server
+    ws.send(JSON.stringify({
+      type: 'placeFrog',
+      player: player.playerNumber,
+      index: index,
+    }));
   }
 }
 }
