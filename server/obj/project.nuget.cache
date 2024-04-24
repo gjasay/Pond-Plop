@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "dC6oanAPeWYQl7pzBiXYS7poko/DPJO7fuwoopqTXjDCIcuC3zZMkKQ4dMJxnTfOxjaL54jwPlKa+qUBoqclZQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\gabea\\Desktop\\Projects\\JS\\Pond-Plop\\server\\server.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\gabea\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\gabea\\.nuget\\packages\\websocketsharp-netstandard\\1.0.1\\websocketsharp-netstandard.1.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

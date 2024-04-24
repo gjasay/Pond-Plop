@@ -1,6 +1,6 @@
 import { app } from "./app";
-import { lilyPadObjects } from "./lily_pad";
-import { player1, player2, totalFrogs, totalTadpoles } from "./main";
+import { lilyPadObjects } from "./lilypad";
+import { PLAYERS, player1, player2, totalFrogs, totalTadpoles } from "./main";
 import { isTileOccupied, renderSprite } from "./my_functions";
 import { checkTadpoleRow } from "./tadpole";
 import { updatePlayerUI } from "./ui";
@@ -25,16 +25,16 @@ let animating = false;
 let queueRunning = false;
 
 export class Frog {
-  place(player, lilyIndex) {
+  place(lilyIndex, playerid, color) {
     if (animating) return;
-    const newFrog = player.frogsInHand.pop();
+    const newFrog = PLAYERS[playerid].frogsInHand.pop();
 
     newFrog.x = lilyPadObjects[lilyIndex].x;
     newFrog.y = lilyPadObjects[lilyIndex].y;
 
     totalFrogs.push({
       sprite: newFrog,
-      texture: player.color[1],
+      texture: color
     });
 
     this.checkNeighbors();

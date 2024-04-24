@@ -1,7 +1,8 @@
 import { app } from "./app";
-import { lilyPadSprites } from "./lily_pad";
-import { player1, player2, totalTadpoles } from "./main";
+import { lilyPadSprites } from "./lilypad";
+import { PLAYERS, player1, player2, totalTadpoles } from "./main";
 import { isTileOccupied, renderSprite } from "./my_functions";
+
 import { updatePlayerUI } from "./ui";
 
 const neighborOffsets = [
@@ -22,17 +23,27 @@ let animating = false;
 
 let queueRunning = false;
 
-export class Tadpole {
-  place(lilyIndex, player) {
-    if (animating) return;
-    const newTadpole = player.tadpolesInHand.pop();
+let tadpoleArray = [];
 
+function initializeTadpoleArray() {
+  tadpoleArray = totalTadpoles
+}
+
+// Call initializeTadpoleArray after all modules have been fully loaded
+window.addEventListener('load', initializeTadpoleArray);
+
+export class Tadpole {
+  place(lilyIndex, playerid, color) {
+    if (animating) return;
+    const newTadpole = PLAYERS[playerid].tadpolesInHand.pop();
+
+    console.log(lilyIndex)
     newTadpole.x = lilyPadSprites[lilyIndex].x;
     newTadpole.y = lilyPadSprites[lilyIndex].y;
 
-    totalTadpoles.push({
+    tadpoleArray.push({
       sprite: newTadpole,
-      texture: player.color[0],
+      texture: color,
     });
 
     this.checkNeighbors();
@@ -43,8 +54,8 @@ export class Tadpole {
 
   // This function checks the neighboring tiles around the current tadpole
   checkNeighbors() {
-    // Get the last tadpole in the totalTadpoles array
-    const currentTadpole = totalTadpoles[totalTadpoles.length - 1].sprite;
+    // Get the last tadpole in the tadpoleArray array
+    const currentTadpole = tadpoleArray[tadpoleArray.length - 1].sprite;
 
     // Iterate over the neighborOffsets array
     for (const neighbor of neighborOffsets) {
@@ -53,7 +64,7 @@ export class Tadpole {
       const ny = currentTadpole.y + neighbor.dy;
 
       // Find the index of the tadpole that is on the neighboring tile
-      const neighborIndex = totalTadpoles.findIndex(
+      const neighborIndex = tadpoleArray.findIndex(
         (tadpole) => tadpole.sprite.x === nx && tadpole.sprite.y === ny,
       );
 
@@ -65,13 +76,13 @@ export class Tadpole {
       if (neighborIndex !== -1 && !isTileOccupied(newX, newY)) {
         // Calculate the increments for the x and y coordinates
         const xIncrement =
-          newX > totalTadpoles[neighborIndex].sprite.x ? 1 : -1;
+          newX > tadpoleArray[neighborIndex].sprite.x ? 1 : -1;
         const yIncrement =
-          newY > totalTadpoles[neighborIndex].sprite.y ? 1 : -1;
+          newY > tadpoleArray[neighborIndex].sprite.y ? 1 : -1;
 
         // Add the tadpole to the queue
         tadpoleQueue.push({
-          tadpole: totalTadpoles[neighborIndex],
+          tadpole: tadpoleArray[neighborIndex],
           newX,
           newY,
           xIncrement,
@@ -139,8 +150,8 @@ function processTadpoleQueue() {
       if (!isInBounds) {
         // Remove the tadpole from the gameboard
         tadpole.sprite.parent.removeChild(tadpole.sprite);
-        // Remove the tadpole from the totalTadpoles array
-        totalTadpoles.splice(totalTadpoles.indexOf(tadpole), 1);
+        // Remove the tadpole from the tadpoleArray array
+        tadpoleArray.splice(tadpoleArray.indexOf(tadpole), 1);
         // Add a tadpole back to the player's hand
         if (tadpole.texture === "assets/tadpole.png") {
           player2.tadpolesInHand.push(
@@ -175,9 +186,10 @@ function processTadpoleQueue() {
 export function checkTadpoleRow() {
   let toRemove = [];
 
-  // Iterate over the totalTadpoles array
-  for (let i = 0; i < totalTadpoles.length; i++) {
-    const currentTadpole = totalTadpoles[i];
+  // Iterate over the tadpoleArray array
+  for (let i = 0; i < tadpoleArray.length; i++) {
+    const currentTadpole = tadpoleArray[i];
+    console.log(tadpoleArray);
 
     // Iterate over the neighborOffsets array
     for (const offset of neighborOffsets) {
@@ -188,10 +200,10 @@ export function checkTadpoleRow() {
       const ny2 = ny1 + offset.dy;
 
       // Find the indices of the tadpoles that are on the neighboring tiles
-      const neighborIndex1 = totalTadpoles.findIndex(
+      const neighborIndex1 = tadpoleArray.findIndex(
         (tadpole) => tadpole.sprite.x === nx1 && tadpole.sprite.y === ny1,
       );
-      const neighborIndex2 = totalTadpoles.findIndex(
+      const neighborIndex2 = tadpoleArray.findIndex(
         (tadpole) => tadpole.sprite.x === nx2 && tadpole.sprite.y === ny2,
       );
 
@@ -199,9 +211,9 @@ export function checkTadpoleRow() {
       if (
         neighborIndex1 !== -1 &&
         neighborIndex2 !== -1 &&
-        currentTadpole.texture === totalTadpoles[neighborIndex1].texture &&
-        totalTadpoles[neighborIndex1].texture ===
-          totalTadpoles[neighborIndex2].texture
+        currentTadpole.texture === tadpoleArray[neighborIndex1].texture &&
+        tadpoleArray[neighborIndex1].texture ===
+          tadpoleArray[neighborIndex2].texture
       ) {
         // Add the indices to the toRemove array
         toRemove.push(i, neighborIndex1, neighborIndex2);
@@ -215,9 +227,10 @@ export function checkTadpoleRow() {
   // Sort the toRemove array in descending order
   toRemove.sort((a, b) => b - a);
 
-  // Remove the tadpoles from the totalTadpoles array
+  // Remove the tadpoles from the tadpoleArray array
   for (const index of toRemove) {
-    const tadpole = totalTadpoles[index];
+    const tadpole = tadpoleArray[index];
+    console.log(tadpoleArray[index]);
 
     // Remove the tadpole from the gameboard
     if (tadpole.sprite.parent) {
@@ -237,7 +250,7 @@ export function checkTadpoleRow() {
     // Update the player UI
     updatePlayerUI();
 
-    // Remove the tadpole from the totalTadpoles array
-    totalTadpoles.splice(index, 1);
+    // Remove the tadpole from the tadpoleArray array
+    tadpoleArray.splice(index, 1);
   }
 }

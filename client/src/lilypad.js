@@ -1,4 +1,3 @@
-import { app } from "./app";
 import { renderSprite } from "./my_functions";
 
 export const lilyPadObjects = [];
